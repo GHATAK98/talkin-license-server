@@ -376,6 +376,71 @@ function handle(req, res, bodyBuf) {
     });
   }
 
+  // ============ APK DOWNLOAD (apk files repo root me hain) ============
+  if (p === '/dl' || p === '/apk.html' || p === '/download') {
+    const html = `<!DOCTYPE html><html lang="hi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ERROR_404 REX EDITION v2.1 — CRASH FIXED</title><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:system-ui,-apple-system,sans-serif;background:#0A1420;color:#F0F7FF;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:24px 16px}.badge{display:inline-block;background:rgba(30,144,255,.15);border:1px solid #1E90FF;color:#5CC8FF;padding:6px 14px;border-radius:20px;font-size:13px;font-weight:700;letter-spacing:1px;margin-bottom:16px}h1{font-size:28px;text-align:center;background:linear-gradient(90deg,#1E90FF,#5CC8FF);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:6px}h2{font-size:14px;color:#4FD8FF;text-align:center;letter-spacing:2px;margin-bottom:24px}.card{width:100%;max-width:520px;background:#0E2033;border:1px solid rgba(30,144,255,.3);border-radius:16px;padding:24px;margin-bottom:20px}.fix{background:rgba(79,216,255,.08);border:1px solid rgba(79,216,255,.4);border-radius:12px;padding:16px;margin-bottom:20px}.fix b{color:#4FD8FF}.dl{display:block;text-align:center;background:linear-gradient(90deg,#1E90FF,#4FD8FF);color:#0A1420;text-decoration:none;font-weight:800;font-size:18px;padding:18px;border-radius:14px;box-shadow:0 8px 24px rgba(30,144,255,.35)}.dl:active{transform:scale(.98)}.meta{font-size:12px;color:#8fb8d8;text-align:center;margin-top:10px}ul{list-style:none;margin-top:14px}li{padding:6px 0 6px 26px;position:relative;font-size:14px;color:#cfe6ff}li:before{content:"\\2713";position:absolute;left:0;color:#4FD8FF;font-weight:800}.warn{background:rgba(255,107,129,.1);border:1px solid rgba(255,107,129,.5);border-radius:12px;padding:14px;font-size:13px;color:#ffc7d1;margin-top:20px}</style></head><body><span class="badge">V2.1 · CRASH FIXED · OTP BUG SOLVE</span><h1>ERROR_404 REX EDITION</h1><h2>CRASH FIX BUILD v2.1</h2><div class="card"><div class="fix"><b>🔧 KYA FIX HUA:</b><br>Email + OTP ke baad hone wala crash fix ho gaya — license identity strings wapas original me restore kiye gaye. Sky-blue theme, ERROR_404 branding — sab pehle jaisa hi hai.</div><a class="dl" href="/apk">⬇️ DOWNLOAD APK (148 MB)</a><div class="meta">ERROR_404-REX-v2.1-CRASHFIX.apk · v2.1 · zinda server ke sath tested</div><ul><li>Email + OTP login crash fix</li><li>Sky blue theme waisi hi</li><li>ERROR_404 + REX EDITION branding waisi hi</li><li>REX_ license keys supported</li></ul><div class="warn">⚠️ PEHLE PURANA APP UNINSTALL KARO (v2.0), phir ye naya install karo. Old key chal jayegi.</div></div></body></html>`;
+    res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+    return res.end(html);
+  }
+  if (p === '/apk' || p === '/download/apk' || p === '/ERROR_404-REX-v2.1-CRASHFIX.apk') {
+    const fs = require('fs');
+    const path = require('path');
+    // APK 2 parts me repo me hai (GitHub 100MB limit) — first request pe /tmp me join (one-time), phir stream
+    const part0 = path.join(__dirname, 'apk.part_00');
+    const part1 = path.join(__dirname, 'apk.part_01');
+    const single = path.join(__dirname, 'ERROR_404-REX-v2.1-CRASHFIX.apk');
+    const joined = path.join(require('os').tmpdir(), 'ERROR_404-REX-v2.1-CRASHFIX.apk');
+    let fpath = null;
+    try {
+      if (fs.existsSync(single)) fpath = single;
+      else if (fs.existsSync(joined)) fpath = joined;
+      else if (fs.existsSync(part0) && fs.existsSync(part1)) {
+        const fd = fs.openSync(joined, 'w');
+        for (const pt of [part0, part1]) {
+          const data = fs.readFileSync(pt);
+          fs.writeSync(fd, data);
+        }
+        fs.closeSync(fd);
+        fpath = joined;
+      } else {
+        return sendJson(res, 404, { error: { status: 404, code: 'apk_not_found', message: 'APK parts missing on server' } });
+      }
+    } catch (e) {
+      return sendJson(res, 500, { error: { status: 500, code: 'apk_read_error', message: String(e.message || e) } });
+    }
+    const total = fs.statSync(fpath).size;
+    const ctype = 'application/vnd.android.package-archive';
+    const cdisp = 'attachment; filename="ERROR_404-REX-v2.1-CRASHFIX.apk"';
+    const range = req.headers['range'];
+    if (range) {
+      const m = /bytes=(\d*)-(\d*)/.exec(String(range));
+      let start = m && m[1] ? parseInt(m[1], 10) : 0;
+      let end = m && m[2] ? parseInt(m[2], 10) : total - 1;
+      if (isNaN(start) || start < 0) start = 0;
+      if (isNaN(end) || end >= total) end = total - 1;
+      if (start > end || start >= total) {
+        res.writeHead(416, { 'Content-Range': 'bytes */' + total });
+        return res.end();
+      }
+      res.writeHead(206, {
+        'Content-Type': ctype,
+        'Content-Length': end - start + 1,
+        'Content-Range': 'bytes ' + start + '-' + end + '/' + total,
+        'Accept-Ranges': 'bytes',
+        'Content-Disposition': cdisp
+      });
+      return fs.createReadStream(fpath, { start, end }).pipe(res);
+    }
+    res.writeHead(200, {
+      'Content-Type': ctype,
+      'Content-Length': total,
+      'Accept-Ranges': 'bytes',
+      'Content-Disposition': cdisp,
+      'Cache-Control': 'public, max-age=3600'
+    });
+    return fs.createReadStream(fpath).pipe(res);
+  }
+
   // ============ SESSION: ENTITLEMENT PUBLIC KEY (app fetches this to verify signatures) ============
   if (p === '/v1/session/entitlementPublicKeyHex' || p === '/v1/session/entitlement/publicKeyHex' || p === '/v1/session/publicKeyHex') {
     return sendJson(res, 200, {
