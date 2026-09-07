@@ -1,0 +1,13 @@
+{
+  "name": "talkin-le-license-server",
+  "version": "1.0.0",
+  "description": "Talkin LE custom license server (zero-dependency, sirf Node.js chahiye)",
+  "main": "license-server.js",
+  "scripts": {
+    "start": "node license-server.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "license": "MIT"
+}

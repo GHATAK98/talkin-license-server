@@ -1,0 +1,68 @@
+{
+  "keys": {
+    "fool403_1bee312d6c901647eb9188bca75ed900e2a198f8bc15c361": {
+      "key": "fool403_1bee312d6c901647eb9188bca75ed900e2a198f8bc15c361",
+      "discord_id": null,
+      "key_type": "standard",
+      "description": "Fresh key 1 (guide sample)",
+      "is_active": true,
+      "max_devices": 2,
+      "max_accounts": 3,
+      "devices": [],
+      "plan": {
+        "id": "plan_pro",
+        "name": "Pro",
+        "expires_at": 1791372114185,
+        "features": {
+          "prank": true,
+          "boost": true,
+          "antidelete": true,
+          "antimicmute": true,
+          "antimicremove": true,
+          "antivoiceroomleave": true,
+          "isvoiceeffect": true,
+          "issoundbox": true,
+          "isimgprank": true,
+          "isstickerprank": true,
+          "ismusicbot": true,
+          "isantiban": true
+        }
+      },
+      "lock_until": 0,
+      "note": ""
+    },
+    "fool403_7a5d9adc1de804140186eae52dd1b3b52c89962367273d67": {
+      "key": "fool403_7a5d9adc1de804140186eae52dd1b3b52c89962367273d67",
+      "discord_id": null,
+      "key_type": "standard",
+      "description": "Fresh key 2 (guide sample)",
+      "is_active": true,
+      "max_devices": 1,
+      "max_accounts": 1,
+      "devices": [],
+      "plan": {
+        "id": "plan_pro",
+        "name": "Pro",
+        "expires_at": 1789384914190,
+        "features": {
+          "prank": true,
+          "boost": true,
+          "antidelete": true,
+          "antimicmute": true,
+          "antimicremove": true,
+          "antivoiceroomleave": true,
+          "isvoiceeffect": true,
+          "issoundbox": true,
+          "isimgprank": true,
+          "isstickerprank": true,
+          "ismusicbot": true,
+          "isantiban": true
+        }
+      },
+      "lock_until": 0,
+      "note": ""
+    }
+  },
+  "devices": {},
+  "announcement": "hello from import"
+}
