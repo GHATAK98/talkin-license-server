@@ -48,7 +48,7 @@ const ENTITLEMENT_PUBLIC_KEY_HEX = 'fa4fe3104d4e5858a55e8571ba012b27d3bc05e89fd5
 // NOTE: BuildConfig me APP_SIGNING_SECRET ko "" (empty) patch kar rahe hain.
 // Decompiled code case 37 me hai: if(!signingSecret) return {} — client sign NAHI karega.
 // Isliye server-side HMAC verify ki zaroorat nahi. Ye secret sirf ADMIN API ke liye hai:
-const ADMIN_SECRET = process.env.ADMIN_SECRET || 'CHANGE-ME-ADMIN-SECRET-123';
+const ADMIN_SECRET = process.env.ADMIN_SECRET || 'MAHADEV@74651';
 
 // APK request signature verify karna? (client ab sign nahi karta, to false hi rakhna safe hai)
 const VERIFY_REQUEST_SIGNATURE = false;
