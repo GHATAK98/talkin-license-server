@@ -376,6 +376,17 @@ function handle(req, res, bodyBuf) {
     });
   }
 
+  // ============ SESSION: ENTITLEMENT PUBLIC KEY (app fetches this to verify signatures) ============
+  if (p === '/v1/session/entitlementPublicKeyHex' || p === '/v1/session/entitlement/publicKeyHex' || p === '/v1/session/publicKeyHex') {
+    return sendJson(res, 200, {
+      ok: true,
+      hex: ENTITLEMENT_PUBLIC_KEY_HEX,
+      publicKeyHex: ENTITLEMENT_PUBLIC_KEY_HEX,
+      public_key_hex: ENTITLEMENT_PUBLIC_KEY_HEX,
+      entitlementPublicKeyHex: ENTITLEMENT_PUBLIC_KEY_HEX
+    });
+  }
+
   // ============ SESSION: SIGNED ENTITLEMENT ============
   if (p === '/v1/session/entitlement') {
     if (!xApiKey) return apiError(res, 401, 'no_api_key', 'x-api-key required');
