@@ -215,6 +215,16 @@ function findKey(xApiKey) {
 
 // ================= SERVER =================
 const server = http.createServer((req, res) => {
+  // ==== CORS PREFLIGHT (browser/admin-panel support) ====
+  if (req.method === 'OPTIONS') {
+    res.writeHead(204, {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, x-admin-secret, x-api-key, x-device-id, x-app-version, x-signature, x-timestamp, x-nonce',
+      'Access-Control-Max-Age': '86400'
+    });
+    return res.end();
+  }
   const chunks = [];
   req.on('data', c => chunks.push(c));
   req.on('end', () => {
@@ -409,6 +419,216 @@ function handle(req, res, bodyBuf) {
   const auth = headers['x-admin-secret'] || '';
   if (p.startsWith('/admin/') && auth === ADMIN_SECRET) {
     return handleAdmin(req, res, p, bodyBuf);
+  }
+
+  // ============ ADMIN WEB PANEL (browser — /admin pe) ============
+  if (p === '/admin' || p === '/admin/') {
+    const html = `<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Talkin LE — Admin Panel</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, 'Segoe UI', Roboto, sans-serif; }
+  body { background: #0D0A0F; color: #fff; min-height: 100vh; padding: 20px; }
+  .wrap { max-width: 520px; margin: 0 auto; }
+  h1 { font-size: 26px; text-align: center; margin-bottom: 4px; }
+  .sub { text-align: center; color: #FF7A18; letter-spacing: 3px; font-size: 12px; font-weight: bold; margin-bottom: 28px; }
+  .card { background: linear-gradient(180deg,#17131C,#100D14); border: 1px solid #262030; border-radius: 18px; padding: 22px; margin-bottom: 16px; }
+  label { display: block; font-size: 11px; color: #9A93A0; letter-spacing: 1.5px; font-weight: bold; margin-bottom: 8px; }
+  input, select { width: 100%; background: #1C1723; border: 1px solid #332B40; border-radius: 12px; padding: 13px 14px; color: #fff; font-size: 15px; outline: none; }
+  input:focus { border-color: #FF7A18; }
+  .row { display: flex; gap: 10px; margin-bottom: 14px; }
+  .row > div { flex: 1; }
+  button { width: 100%; background: linear-gradient(90deg,#FF3D00,#FF7A18); border: none; border-radius: 27px; padding: 15px; color: #fff; font-size: 15px; font-weight: bold; letter-spacing: 1px; cursor: pointer; margin-top: 6px; }
+  button:active { opacity: .8; }
+  button.ghost { background: #241E2E; margin-top: 10px; }
+  .msg { margin-top: 14px; font-size: 13px; color: #B6AFBC; text-align: center; min-height: 18px; }
+  .newkey { background: #12251A; border: 1px solid #2E7D32; border-radius: 12px; padding: 14px; margin-top: 14px; display: none; }
+  .newkey .k { word-break: break-all; font-family: monospace; font-size: 13px; color: #7CFC8F; user-select: all; }
+  .list { margin-top: 10px; }
+  .kitem { background: #1C1723; border: 1px solid #332B40; border-radius: 12px; padding: 12px 14px; margin-bottom: 8px; font-size: 12px; }
+  .kitem .kk { word-break: break-all; font-family: monospace; color: #FFC46B; }
+  .kitem .meta { color: #9A93A0; margin-top: 4px; }
+  .kitem .act { margin-top: 8px; display: flex; gap: 8px; flex-wrap: wrap; }
+  .kitem .act button { width: auto; padding: 7px 12px; font-size: 11px; border-radius: 16px; margin: 0; background: #241E2E; }
+  .kitem .act button.danger { background: #3A1420; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: bold; }
+  .b-prem { background: #3A2A08; color: #FFC46B; } .b-std { background: #12303A; color: #6BD7E8; }
+  .b-off { background: #3A1420; color: #FF6B81; } .b-on { background: #12251A; color: #7CFC8F; }
+  .secret-row { display: flex; gap: 10px; }
+  .stat { display: flex; justify-content: space-around; margin-bottom: 16px; }
+  .stat div { text-align: center; } .stat .n { font-size: 22px; font-weight: bold; color: #FF7A18; } .stat .l { font-size: 10px; color: #9A93A0; letter-spacing: 1px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>TALKIN</h1>
+  <div class="sub">LICENSE ADMIN PANEL</div>
+
+  <div class="card" id="loginCard">
+    <label>ADMIN SECRET DAALO</label>
+    <div class="secret-row">
+      <input type="password" id="secret" placeholder="9c081f..." autocomplete="off">
+      <button style="width:auto;margin:0;padding:13px 18px" onclick="login()">LOGIN</button>
+    </div>
+    <div class="msg" id="loginMsg"></div>
+  </div>
+
+  <div id="panel" style="display:none">
+    <div class="stat">
+      <div><div class="n" id="stTotal">0</div><div class="l">TOTAL KEYS</div></div>
+      <div><div class="n" id="stActive">0</div><div class="l">ACTIVE</div></div>
+      <div><div class="n" id="stDevices">0</div><div class="l">DEVICES</div></div>
+    </div>
+
+    <div class="card">
+      <label>NAYI KEY GENERATE KARO</label>
+      <div class="row">
+        <div><label>KISKO (NAAM/ID)</label><input id="fDiscord" placeholder="RAM-BHAI" autocomplete="off"></div>
+      </div>
+      <div class="row">
+        <div><label>TYPE</label>
+          <select id="fType"><option value="premium">PREMIUM</option><option value="standard">STANDARD</option></select></div>
+        <div><label>DEVICES</label>
+          <select id="fDev"><option>1</option><option>2</option><option>3</option><option>5</option></select></div>
+      </div>
+      <div class="row">
+        <div><label>ACCOUNTS</label>
+          <select id="fAcc"><option>5</option><option>3</option><option>10</option><option>1</option></select></div>
+        <div><label>DIN (VALIDITY)</label>
+          <select id="fDays"><option value="9999">9999 (LIFETIME)</option><option value="365">365</option><option value="90">90</option><option value="30">30</option><option value="7">7</option><option value="3">3</option></select></div>
+      </div>
+      <button onclick="createKey()">🔑 GENERATE KARO</button>
+      <div class="newkey" id="newKeyBox">
+        <label>✅ NAYI KEY READY — COPY KARO:</label>
+        <div class="k" id="newKey"></div>
+      </div>
+      <div class="msg" id="msg"></div>
+    </div>
+
+    <div class="card">
+      <label>SAARI KEYS</label>
+      <div class="list" id="keyList"><div class="msg">LOADING...</div></div>
+      <button class="ghost" onclick="loadKeys()">🔄 REFRESH LIST</button>
+    </div>
+  </div>
+</div>
+<script>
+const API = location.origin;
+let S = sessionStorage.getItem('tladmin') || '';
+
+function login() {
+  S = document.getElementById('secret').value.trim();
+  document.getElementById('loginMsg').textContent = 'CHECK KAR RAHA HU...';
+  fetch(API + '/admin/keys/list', { headers: { 'x-admin-secret': S } })
+    .then(r => r.json())
+    .then(j => {
+      if (j.keys) {
+        sessionStorage.setItem('tladmin', S);
+        document.getElementById('loginCard').style.display = 'none';
+        document.getElementById('panel').style.display = 'block';
+        loadKeys();
+      } else {
+        document.getElementById('loginMsg').textContent = '❌ GALAT SECRET HAI BHAI';
+      }
+    })
+    .catch(() => document.getElementById('loginMsg').textContent = '⚠️ SERVER SE CONNECT NAHI HUA');
+}
+
+function loadKeys() {
+  fetch(API + '/admin/keys/list', { headers: { 'x-admin-secret': S } })
+    .then(r => r.json())
+    .then(j => {
+      if (!j.keys) return;
+      const list = document.getElementById('keyList');
+      let total = j.keys.length, active = 0, devs = 0;
+      list.innerHTML = '';
+      j.keys.forEach(k => {
+        if (k.active) active++;
+        devs += k.devices;
+        const d = document.createElement('div');
+        d.className = 'kitem';
+        const prem = k.type === 'premium';
+        const dleft = Math.max(0, k.max_devices - k.devices);
+        const exp = k.plan && k.plan.expires_at ? new Date(k.plan.expires_at).toLocaleDateString('en-GB') : '—';
+        d.innerHTML = '<span class="badge ' + (prem?'b-prem':'b-std') + '">' + k.type.toUpperCase() + '</span> ' +
+          '<span class="badge ' + (k.active?'b-on':'b-off') + '">' + (k.active?'ACTIVE':'OFF') + '</span>' +
+          (k.lock_until && k.lock_until > Date.now() ? ' <span class="badge b-off">LOCKED</span>' : '') +
+          '<div class="kk" style="margin-top:6px">' + k.key + '</div>' +
+          '<div class="meta">DEVICES: ' + k.devices + '/' + k.max_devices + ' · EXPIRE: ' + exp + '</div>' +
+          '<div class="act"><button onclick="cp(\\''+k.key+'\\')">📋 COPY</button>' +
+          '<button onclick="rst(\\''+k.key+'\\')">♻️ RESET DEV</button>' +
+          '<button onclick="tgl(\\''+k.key+'\\','+(!k.active)+')">' + (k.active?'⏸ DISABLE':'▶ ENABLE') + '</button>' +
+          '<button class="danger" onclick="del(\\''+k.key+'\\')">🗑 DELETE</button></div>';
+        list.appendChild(d);
+      });
+      document.getElementById('stTotal').textContent = total;
+      document.getElementById('stActive').textContent = active;
+      document.getElementById('stDevices').textContent = devs;
+    });
+}
+
+function createKey() {
+  const msg = document.getElementById('msg');
+  msg.textContent = '⏳ KEY BAN RAHI HAI...';
+  const body = {
+    discord_id: document.getElementById('fDiscord').value.trim() || 'BANDA',
+    key_type: document.getElementById('fType').value,
+    max_devices: parseInt(document.getElementById('fDev').value),
+    max_accounts: parseInt(document.getElementById('fAcc').value),
+    days: parseInt(document.getElementById('fDays').value),
+    description: 'Admin panel se bani'
+  };
+  fetch(API + '/admin/keys/create', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'x-admin-secret': S },
+    body: JSON.stringify(body)
+  })
+  .then(r => r.json())
+  .then(j => {
+    if (j.ok) {
+      document.getElementById('newKeyBox').style.display = 'block';
+      document.getElementById('newKey').textContent = j.key;
+      msg.textContent = '✅ KEY BAN GAYI! Upar copy karke user ko de de.';
+      loadKeys();
+    } else {
+      msg.textContent = '❌ ' + (j.error ? j.error.message : 'FAIL');
+    }
+  })
+  .catch(() => msg.textContent = '⚠️ SERVER SE CONNECT NAHI HUA');
+}
+
+function cp(k) { navigator.clipboard ? navigator.clipboard.writeText(k) : prompt('Copy:', k); }
+function rst(k) { if (confirm('Is key ke saare devices reset kare?')) post('/admin/keys/reset-devices', { key: k }); }
+function tgl(k, on) { post('/admin/keys/toggle', { key: k, active: on }); }
+function del(k) { if (confirm('PAKKA DELETE? Wapas nahi aayegi!')) post('/admin/keys/delete', { key: k }); }
+
+function post(path, body) {
+  fetch(API + path, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'x-admin-secret': S },
+    body: JSON.stringify(body)
+  }).then(r => r.json()).then(j => { loadKeys(); });
+}
+
+if (S) {
+  fetch(API + '/admin/keys/list', { headers: { 'x-admin-secret': S } })
+    .then(r => r.json())
+    .then(j => {
+      if (j.keys) {
+        document.getElementById('loginCard').style.display = 'none';
+        document.getElementById('panel').style.display = 'block';
+        loadKeys();
+      }
+    });
+}
+</script>
+</body>
+</html>`;
+    res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Access-Control-Allow-Origin': '*' });
+    return res.end(html);
   }
 
   return sendJson(res, 404, { error: { status: 404, code: 'not_found', message: p } });

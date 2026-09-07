@@ -61,8 +61,45 @@
       },
       "lock_until": 0,
       "note": ""
+    },
+    "fool403_a17cce824524ee4b5da6f98d82dd5c137288769fc2d127bb": {
+      "key": "fool403_a17cce824524ee4b5da6f98d82dd5c137288769fc2d127bb",
+      "discord_id": "BHAI-MAIN",
+      "key_type": "premium",
+      "description": "Bhai ka primary key - Talkin LE",
+      "is_active": true,
+      "max_devices": 1,
+      "max_accounts": 5,
+      "devices": [],
+      "plan": {
+        "id": "plan_pro",
+        "name": "Pro",
+        "expires_at": 1791378607186,
+        "features": {
+          "prank": true,
+          "boost": true,
+          "antidelete": true,
+          "antimicmute": true,
+          "antimicremove": true,
+          "antivoiceroomleave": true,
+          "isvoiceeffect": true,
+          "issoundbox": true,
+          "isimgprank": true,
+          "isstickerprank": true,
+          "ismusicbot": true,
+          "isantiban": true
+        }
+      },
+      "lock_until": 0,
+      "note": ""
     }
   },
-  "devices": {},
+  "devices": {
+    "dev-3c3eff6d4dd938c8a10b7a85270f7e4b": {
+      "key": "fool403_a17cce824524ee4b5da6f98d82dd5c137288769fc2d127bb",
+      "last_seen": 1788787772750,
+      "name": "Device"
+    }
+  },
   "announcement": "hello from import"
 }
