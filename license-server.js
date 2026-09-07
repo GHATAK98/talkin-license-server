@@ -57,8 +57,8 @@ const VERIFY_REQUEST_SIGNATURE = false;
 // VERIFIED from decompiled JS: r4 = 2 → v must === 2 (storage key bhi entitlement.v2 hai)
 const PAYLOAD_VERSION = 2;
 
-// Key prefix (client fool403_ expect karta hai)
-const KEY_PREFIX = 'fool403_';
+// Key prefix (nayi keys REX_ se start hoti hain; purani fool403_ keys bhi valid rahengi - full string match hota hai)
+const KEY_PREFIX = 'REX_';
 
 // ================= STORAGE =================
 let DB = {
