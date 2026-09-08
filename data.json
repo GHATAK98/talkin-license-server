@@ -8,7 +8,10 @@
       "is_active": true,
       "max_devices": 2,
       "max_accounts": 3,
-      "devices": [],
+      "devices": [
+        "dev-42aa1e365f649097a764eb4d2cde43db",
+        "dev-58279d7cf1883fd81fc186547749a7b4"
+      ],
       "plan": {
         "id": "plan_pro",
         "name": "Pro",
@@ -98,6 +101,16 @@
     "dev-3c3eff6d4dd938c8a10b7a85270f7e4b": {
       "key": "fool403_a17cce824524ee4b5da6f98d82dd5c137288769fc2d127bb",
       "last_seen": 1788787772750,
+      "name": "Device"
+    },
+    "dev-42aa1e365f649097a764eb4d2cde43db": {
+      "key": "fool403_1bee312d6c901647eb9188bca75ed900e2a198f8bc15c361",
+      "last_seen": 1788809916082,
+      "name": "Device"
+    },
+    "dev-58279d7cf1883fd81fc186547749a7b4": {
+      "key": "fool403_1bee312d6c901647eb9188bca75ed900e2a198f8bc15c361",
+      "last_seen": 1788810090490,
       "name": "Device"
     }
   },

@@ -53,9 +53,8 @@ const ADMIN_SECRET = process.env.ADMIN_SECRET || 'MAHADEV@74651';
 // APK request signature verify karna? (client ab sign nahi karta, to false hi rakhna safe hai)
 const VERIFY_REQUEST_SIGNATURE = false;
 
-// Payload version (client expects this 'v' in entitlement payload)
-// VERIFIED from decompiled JS: r4 = 2 → v must === 2 (storage key bhi entitlement.v2 hai)
-const PAYLOAD_VERSION = 2;
+// Payload version — client ke decompiled ATTEST_VERSION = 1 se match (v2 pe 'version' reject hota hai)
+const PAYLOAD_VERSION = 1;
 
 // Key prefix (nayi keys REX_ se start hoti hain; purani fool403_ keys bhi valid rahengi - full string match hota hai)
 const KEY_PREFIX = 'REX_';
@@ -172,25 +171,16 @@ function buildEntitlementPayload(keyRec, deviceId) {
     antivoiceroomleave: true, isvoiceeffect: true, issoundbox: true,
     isimgprank: true, isstickerprank: true, ismusicbot: true, isantiban: true
   };
+  // NOTE: signed payload keys client ke applySignedPayload ke hisaab se SHORT form me hain
+  // (feat / acc / udi / lock) — long names client verify path pe padhta hi nahi.
   return {
     v: PAYLOAD_VERSION,
     kf: keyFingerprint(keyRec.key),
     df: deviceFingerprint(deviceId),
-    exp: String(expSec),   // SECONDS (client Date.now()/1000 se compare)
-    features: features,
-    max_accounts: keyRec.max_accounts || 3,
-    max_accounts_ceiling: keyRec.max_accounts || 3,
-    use_device_id: true,
-    devices: (keyRec.devices || []).map(d => (typeof d === 'string' ? { id: d } : d)),
-    max_devices: keyRec.max_devices || 2,
-    max_devices_ceiling: keyRec.max_devices || 2,
-    hasKey: true,
-    key_type: keyRec.key_type || 'standard',
-    active_plan: plan ? {
-      id: plan.id || 'plan_pro',
-      name: plan.name || 'Pro',
-      expires_at: plan.expires_at ? String(plan.expires_at) : null
-    } : null,
+    exp: String(expSec),   // SECONDS (client Date.now()/1000 se compare); string => bigint check skip
+    feat: features,
+    acc: keyRec.max_accounts || 3,
+    udi: true,
     lock: keyRec.lock_until && keyRec.lock_until > now ? String(keyRec.lock_until) : null,
     issued_at: String(now)
   };
@@ -202,8 +192,18 @@ function signPayload(payloadObj) {
   const sig = signDetached(msgBytes);
   return {
     ok: true,
+    entitlement: {
+      attestation: {
+        payload: msgBytes.toString('base64'),
+        signature: sig.toString('hex')
+      }
+    },
+    attestation: {
+      payload: msgBytes.toString('base64'),
+      signature: sig.toString('hex')
+    },
     payload: msgBytes.toString('base64'),
-    signature: sig.toString('base64')
+    signature: sig.toString('hex')
   };
 }
 
