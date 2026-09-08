@@ -378,18 +378,18 @@ function handle(req, res, bodyBuf) {
 
   // ============ APK DOWNLOAD (apk files repo root me hain) ============
   if (p === '/dl' || p === '/apk.html' || p === '/download') {
-    const html = `<!DOCTYPE html><html lang="hi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ERROR_404 REX EDITION v2.1 — CRASH FIXED</title><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:system-ui,-apple-system,sans-serif;background:#0A1420;color:#F0F7FF;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:24px 16px}.badge{display:inline-block;background:rgba(30,144,255,.15);border:1px solid #1E90FF;color:#5CC8FF;padding:6px 14px;border-radius:20px;font-size:13px;font-weight:700;letter-spacing:1px;margin-bottom:16px}h1{font-size:28px;text-align:center;background:linear-gradient(90deg,#1E90FF,#5CC8FF);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:6px}h2{font-size:14px;color:#4FD8FF;text-align:center;letter-spacing:2px;margin-bottom:24px}.card{width:100%;max-width:520px;background:#0E2033;border:1px solid rgba(30,144,255,.3);border-radius:16px;padding:24px;margin-bottom:20px}.fix{background:rgba(79,216,255,.08);border:1px solid rgba(79,216,255,.4);border-radius:12px;padding:16px;margin-bottom:20px}.fix b{color:#4FD8FF}.dl{display:block;text-align:center;background:linear-gradient(90deg,#1E90FF,#4FD8FF);color:#0A1420;text-decoration:none;font-weight:800;font-size:18px;padding:18px;border-radius:14px;box-shadow:0 8px 24px rgba(30,144,255,.35)}.dl:active{transform:scale(.98)}.meta{font-size:12px;color:#8fb8d8;text-align:center;margin-top:10px}ul{list-style:none;margin-top:14px}li{padding:6px 0 6px 26px;position:relative;font-size:14px;color:#cfe6ff}li:before{content:"\\2713";position:absolute;left:0;color:#4FD8FF;font-weight:800}.warn{background:rgba(255,107,129,.1);border:1px solid rgba(255,107,129,.5);border-radius:12px;padding:14px;font-size:13px;color:#ffc7d1;margin-top:20px}</style></head><body><span class="badge">V2.1 · CRASH FIXED · OTP BUG SOLVE</span><h1>ERROR_404 REX EDITION</h1><h2>CRASH FIX BUILD v2.1</h2><div class="card"><div class="fix"><b>🔧 KYA FIX HUA:</b><br>Email + OTP ke baad hone wala crash fix ho gaya — license identity strings wapas original me restore kiye gaye. Sky-blue theme, ERROR_404 branding — sab pehle jaisa hi hai.</div><a class="dl" href="/apk">⬇️ DOWNLOAD APK (148 MB)</a><div class="meta">ERROR_404-REX-v2.1-CRASHFIX.apk · v2.1 · zinda server ke sath tested</div><ul><li>Email + OTP login crash fix</li><li>Sky blue theme waisi hi</li><li>ERROR_404 + REX EDITION branding waisi hi</li><li>REX_ license keys supported</li></ul><div class="warn">⚠️ PEHLE PURANA APP UNINSTALL KARO (v2.0), phir ye naya install karo. Old key chal jayegi.</div></div></body></html>`;
+    const html = `<!DOCTYPE html><html lang="hi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ERROR_404 REX EDITION v2.2 — REBRAND + CRASH FIXED</title><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:system-ui,-apple-system,sans-serif;background:#0A1420;color:#F0F7FF;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:24px 16px}.badge{display:inline-block;background:rgba(30,144,255,.15);border:1px solid #1E90FF;color:#5CC8FF;padding:6px 14px;border-radius:20px;font-size:13px;font-weight:700;letter-spacing:1px;margin-bottom:16px}h1{font-size:28px;text-align:center;background:linear-gradient(90deg,#1E90FF,#5CC8FF);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:6px}h2{font-size:14px;color:#4FD8FF;text-align:center;letter-spacing:2px;margin-bottom:24px}.card{width:100%;max-width:520px;background:#0E2033;border:1px solid rgba(30,144,255,.3);border-radius:16px;padding:24px;margin-bottom:20px}.fix{background:rgba(79,216,255,.08);border:1px solid rgba(79,216,255,.4);border-radius:12px;padding:16px;margin-bottom:20px}.fix b{color:#4FD8FF}.dl{display:block;text-align:center;background:linear-gradient(90deg,#1E90FF,#4FD8FF);color:#0A1420;text-decoration:none;font-weight:800;font-size:18px;padding:18px;border-radius:14px;box-shadow:0 8px 24px rgba(30,144,255,.35)}.dl:active{transform:scale(.98)}.meta{font-size:12px;color:#8fb8d8;text-align:center;margin-top:10px}ul{list-style:none;margin-top:14px}li{padding:6px 0 6px 26px;position:relative;font-size:14px;color:#cfe6ff}li:before{content:"\\2713";position:absolute;left:0;color:#4FD8FF;font-weight:800}.warn{background:rgba(255,107,129,.1);border:1px solid rgba(255,107,129,.5);border-radius:12px;padding:14px;font-size:13px;color:#ffc7d1;margin-top:20px}</style></head><body><span class="badge">V2.2 · REBRAND + CRASH FIXED · OTP BUG SOLVE</span><h1>ERROR_404 REX EDITION</h1><h2>CRASH FIX BUILD v2.2 (NAYA — 8 Sep 2026)</h2><div class="card"><div class="fix"><b>🔧 KYA FIX HUA (v2.2):</b><br>1. OTP Verify dabane pe hone wala crash FIX — server ab signed attestation bhejta hai jo app verify karta hai.<br>2. Login screen pe 'talkin' ki jagah <b>ERROR_404</b> likha hai ab.<br>3. Sky-blue background (#87CEEB) naya patch kiya.</div><a class="dl" href="/apk?v=2.2">⬇️ DOWNLOAD APK v2.2 (148 MB)</a><div class="meta">ERROR_404-REX-v2.2-REBRAND-CRASHFIX.apk · md5 6556dcf28d1636b3d143e9d46e55ef35 · zinda server ke sath tested</div><ul><li>Email + OTP Verify crash FIX (signed attestation v1)</li><li>Login screen: ERROR_404 (talkin hata diya)</li><li>Sky blue background #87CEEB</li><li>REX_ + fool403_ license keys supported</li></ul><div class="warn">⚠️ PEHLE PURANA APP UNINSTALL KARO (v2.0/v2.1), phir ye naya v2.2 install karo. Key + email + OTP sab waisa hi chalega — Verify pe crash NAHI hoga.</div></div></body></html>`;
     res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
     return res.end(html);
   }
-  if (p === '/apk' || p === '/download/apk' || p === '/ERROR_404-REX-v2.1-CRASHFIX.apk') {
+  if (p === '/apk' || p === '/download/apk' || p === '/ERROR_404-REX-v2.2-REBRAND-CRASHFIX.apk' || p === '/ERROR_404-REX-v2.1-CRASHFIX.apk') {
     const fs = require('fs');
     const path = require('path');
     // APK 2 parts me repo me hai (GitHub 100MB limit) — first request pe /tmp me join (one-time), phir stream
     const part0 = path.join(__dirname, 'apk.part_00');
     const part1 = path.join(__dirname, 'apk.part_01');
-    const single = path.join(__dirname, 'ERROR_404-REX-v2.1-CRASHFIX.apk');
-    const joined = path.join(require('os').tmpdir(), 'ERROR_404-REX-v2.1-CRASHFIX.apk');
+    const single = path.join(__dirname, 'ERROR_404-REX-v2.2-REBRAND-CRASHFIX.apk');
+    const joined = path.join(require('os').tmpdir(), 'ERROR_404-REX-v2.2-REBRAND-CRASHFIX.apk');
     let fpath = null;
     try {
       if (fs.existsSync(single)) fpath = single;
@@ -410,7 +410,7 @@ function handle(req, res, bodyBuf) {
     }
     const total = fs.statSync(fpath).size;
     const ctype = 'application/vnd.android.package-archive';
-    const cdisp = 'attachment; filename="ERROR_404-REX-v2.1-CRASHFIX.apk"';
+    const cdisp = 'attachment; filename="ERROR_404-REX-v2.2-REBRAND-CRASHFIX.apk"';
     const range = req.headers['range'];
     if (range) {
       const m = /bytes=(\d*)-(\d*)/.exec(String(range));
@@ -436,7 +436,9 @@ function handle(req, res, bodyBuf) {
       'Content-Length': total,
       'Accept-Ranges': 'bytes',
       'Content-Disposition': cdisp,
-      'Cache-Control': 'public, max-age=3600'
+      'Cache-Control': 'no-cache, no-store, must-revalidate',
+      'Pragma': 'no-cache',
+      'Expires': '0'
     });
     return fs.createReadStream(fpath).pipe(res);
   }
