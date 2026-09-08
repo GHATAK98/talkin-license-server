@@ -8,10 +8,7 @@
       "is_active": true,
       "max_devices": 2,
       "max_accounts": 3,
-      "devices": [
-        "dev-42aa1e365f649097a764eb4d2cde43db",
-        "dev-58279d7cf1883fd81fc186547749a7b4"
-      ],
+      "devices": [],
       "plan": {
         "id": "plan_pro",
         "name": "Pro",
